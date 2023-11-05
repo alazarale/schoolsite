@@ -1,0 +1,152 @@
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+    <ul class="nav">
+      <li class="nav-item {% if w == 'dash' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'ad_panel:admin_main' %}">
+          <i class="mdi mdi-grid-large menu-icon"></i>
+          <span class="menu-title">Dashboard</span>
+        </a>
+      </li>
+      {% if request.user.is_superuser %}
+      <li class="nav-item nav-category {% if 'G' in w %}active{% endif %}">General Information</li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#gen" aria-expanded="{% if 'G' in w %}true{% else %}flase{% endif %}" aria-controls="gen">
+          <i class="menu-icon mdi mdi-home-variant"></i>
+          <span class="menu-title">Classes</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse {% if 'G' in w %}show{% endif %}" id="gen">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link {% if w == 'Gg' %}active{% endif %}" href="{% url 'ad_panel:admin_grades' %}">Grade List</a></li>
+            <li class="nav-item"> <a class="nav-link {% if w == 'Gsu' %}active{% endif %}" href="{% url 'ad_panel:admin_subjects' %}">Subject List</a></li>
+            <li class="nav-item"> <a class="nav-link" href="#">Courses</a></li>
+            <li class="nav-item"> <a class="nav-link" href="#">Attendance</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item {% if 'A' in w %}active{% endif %}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#account" aria-expanded="{% if 'A' in w %}true{% else %}flase{% endif %}" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-folder-account"></i>
+          <span class="menu-title">Accounts</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse {% if 'A' in w %}show{% endif %}" id="account">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link {% if w == 'As' %}active{% endif %}" href="{% url 'ad_panel:admin_students' %}">Student</a></li>
+            <li class="nav-item"> <a class="nav-link {% if w == 'At' %}active{% endif %}" href="{% url 'ad_panel:admin_teacher' %}">Teacher</a></li>
+            <li class="nav-item"> <a class="nav-link {% if w == 'Ap' %}active{% endif %}" href="{% url 'ad_panel:admin_parent' %}">Parent</a></li>
+          </ul>
+        </div>
+      </li>
+      
+      <li class="nav-item nav-category">Genral Setup and Score</li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#score" aria-expanded="false" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-poll"></i>
+          <span class="menu-title">Scores</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse" id="score">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="#">Class Score</a></li>
+            <li class="nav-item"> <a class="nav-link" href="#">EC-points</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#acc" aria-expanded="false" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-calendar-multiple"></i>
+          <span class="menu-title">Academic Year</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse" id="acc">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="#">Close Year</a></li>
+            <li class="nav-item"> <a class="nav-link" href="#">List</a></li>
+            <li class="nav-item"> <a class="nav-link" href="{% url 'acc_year:yr_setup' %}">Start New</a></li>
+          </ul>
+        </div>
+      </li>
+      {% elif request.user.teacher.all|length > 0 %}
+      <li class="nav-item {% if 'H' in w %}active{% endif %}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#homeclass" aria-expanded="{% if 'H' in w %}true{% else %}flase{% endif %}" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-home"></i>
+          <span class="menu-title">Home Class</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse {% if 'H' in w %}show{% endif %}" id="homeclass">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link {% if w == 'Hc' %}active{% endif %}" href="{% url 'ad_panel:homeclass_attendance' %}">Attendance</a></li>
+            <li class="nav-item"> <a class="nav-link" href="#">Class Score</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item {% if 'T' in w %}active{% endif %}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#teaching" aria-expanded="{% if 'T' in w %}true{% else %}flase{% endif %}" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-school"></i>
+          <span class="menu-title">Teaching classes</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse {% if 'T' in w %}show{% endif %}" id="teaching">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link {% if w == 'Tl' %}active{% endif %}" href="{% url 'ad_panel:teaching_list' %}">Scores</a></li>
+            <li class="nav-item"> <a class="nav-link {% if w == 'Tc' %}active{% endif %}" href="#">Course</a></li>
+            <li class="nav-item"> <a class="nav-link {% if w == 'Te' %}active{% endif %}" href="{% url 'exam_url:exams' %}">Exam</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#elcoin" aria-expanded="false" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-coin"></i>
+          <span class="menu-title">EL-Coin</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse" id="elcoin">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item active"> <a class="nav-link" href="#">History</a></li>
+            <li class="nav-item"> <a class="nav-link" href="#">Transact</a></li>
+          </ul>
+        </div>
+      </li>
+      {% elif request.user.student.all|length > 0 %}
+      <li class="nav-item {% if 'AI' in w %}active{% endif %}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#academicinfo" aria-expanded="{% if 'AI' in w %}true{% else %}flase{% endif %}" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-information-outline"></i>
+          <span class="menu-title">Academic Info</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse {% if 'AI' in w %}show{% endif %}" id="academicinfo">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link {% if w == 'AIr' %}active{% endif %}" href="{% url 'ad_panel:results_all' %}">Results</a></li>
+            <li class="nav-item"> <a class="nav-link {% if w == 'AIa' %}active{% endif %}" href="#">Attendance</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item {% if 'AD' in w %}active{% endif %}">
+        <a class="nav-link" data-bs-toggle="collapse" href="#data" aria-expanded="{% if 'AD' in w %}true{% else %}flase{% endif %}" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-database"></i>
+          <span class="menu-title">Academic Data</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse {% if 'AD' in w %}show{% endif %}" id="data">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link {% if w == 'ADc' %}active{% endif %}" href="#">Course</a></li>
+            <li class="nav-item"> <a class="nav-link {% if w == 'ADc' %}active{% endif %}" href="#">Exam</a></li>
+          </ul>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-bs-toggle="collapse" href="#elcoin" aria-expanded="false" aria-controls="ui-basic">
+          <i class="menu-icon mdi mdi-coin"></i>
+          <span class="menu-title">EL-Coin</span>
+          <i class="menu-arrow"></i> 
+        </a>
+        <div class="collapse" id="elcoin">
+          <ul class="nav flex-column sub-menu">
+            <li class="nav-item"> <a class="nav-link" href="#">Transaction History</a></li>
+            <li class="nav-item"> <a class="nav-link" href="#">Market Place</a></li>
+          </ul>
+        </div>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>

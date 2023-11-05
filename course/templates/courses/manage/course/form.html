@@ -1,0 +1,41 @@
+{% extends 'other.html' %}
+{% block where %}
+<div class="page_link">
+    <a href="index.html">Courses</a>
+    <a href="blog.html">My courses</a>
+    <a href="blog.html">
+        {% if object %}
+            Edit "{{ object.title }}"
+        {% else %}
+            Create
+        {% endif %}
+    </a>
+</div>
+{% endblock %}
+{% block container %}
+    <section class="blog_categorie_area">
+    <div class="container">
+        <h1 style="text-align: center">
+            {% if object %}
+                Edit Course "{{ object.title }}"
+            {% else %}
+                Create a new course
+            {% endif %}
+        </h1><br><br>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <h2 style="text-align: center;">Course info</h2><br>
+                <form action="." method="post" enctype="multipart/form-data">
+                    {{ form.as_p }}
+                    {% csrf_token %}
+                    <br>
+                    <p><input class="genric-btn primary circle" type="submit" value="Save Course"></p>
+                </form>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    
+    </div>
+    </section>
+{% endblock %}

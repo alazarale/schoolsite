@@ -1,0 +1,77 @@
+{% extends 'other.html' %}
+{% block where %}
+
+{% endblock %}
+{% block container %}
+    <section class="blog_categorie_area">
+    <div class="container">
+        <h1 style="text-align: center;">News Area</h1><hr><br><br><br>
+        <div class="row">
+            <div class="col-lg-8">
+
+                <div class="blog_left_sidebar">
+                    {% for news in all_news %}
+                    <article class="row blog_item">
+                        <div class="col-md-3">
+                            <div class="blog_info text-right">
+                                <div class="post_tag">
+                                    {{ news.tags }}
+                                </div>
+                                <ul class="blog_meta list">
+                                    <li>{{ news.owner.username }} <i class="lnr lnr-user"></i></li>
+                                    <li>{{ news.created }} <i class="lnr lnr-calendar-full"></i></li>
+                                    <li>06 Comments <i class="lnr lnr-bubble"></i></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="blog_post">
+                                <img src="{{ news.image.url }}" alt="">
+                                <div class="blog_details">
+                                    <a href="single-blog.html">
+                                        <h2>{{ news.title }}</h2>
+                                    </a>
+                                    <p>
+                                        {{ news.text|slice:300 }}
+                                    </p>
+                                    <a href="{% url 'news_detail' news.id %}" class="blog_btn">View More</a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="blog_right_sidebar" style="background: #fafaff;">
+                    <aside class="single_sidebar_widget search_widget">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search Posts">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button"><i class="lnr lnr-magnifier"></i></button>
+                            </span>
+                        </div>
+                        <div class="br"></div>
+                    </aside>
+                    <br>
+                    <aside class="single_sidebar_widget popular_post_widget">
+                        <h3 class="widget_title">Selected articles</h3>
+                        {% for news in s_news %}
+                        <div class="media post_item">
+                            <img src="{{ news.image.url }}" style="max-width: 70px" alt="post">
+                            <div class="media-body">
+                                <a href="blog-details.html">
+                                    <h3>{{ news.title }}</h3>
+                                </a>
+                                <p>{{ news.created }}</p>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="br"></div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<br>
+<h4 class="card-title">Exams</h4>
+<br>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Add Module to Questions</h4>
+            <div style="margin: 0 auto;">
+                Exam: <div class="badge badge-success">{{ exam.title }}</div>
+            </div>
+            <br>
+            <div class="table-responsive">
+                
+                <table id="example" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Question</th>
+                            <th>Modules</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ques in exam.exam_questions.all %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ ques.question }}</td>
+                            <td>
+                                <select class="form-control" id="{{ ques.id }}">
+                                    {% for mod in modules %}
+                                        <option value="{{ mod.id }}">{{ mod.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>#</th>
+                            <th>Question</th>
+                            <th>Modules</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <br>
+            <div style="display: flex; justify-content: center">
+                {% csrf_token %}
+                <button id="sub" class="btn btn-primary me-2">Submit</button>
+            </div>
+        </div>
+        </div><br><br><br>
+    </div>
+</div>
+{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        var table = $('#example').DataTable({
+            "paging": false,
+            columnDefs: [{
+                orderable: false,
+                targets: [2]
+            }]
+        });
+
+        $('#sub').click( function() {
+            var f_data = {};
+            {% for ques in exam.exam_questions.all %}
+                f_data["{{ ques.id }}"] = $("#{{ ques.id }}").val();
+            {% endfor %}
+            
+            console.log(JSON.stringify([f_data]));
+            $.ajax({
+                type:'POST',
+                url:'add/',
+                data:{
+                    'data': [JSON.stringify(f_data)],
+                    'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+                },
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                complete: function(){
+                $('#loader').hide();
+                },
+                success:function(data){
+                    console.log(data);  
+                },
+            }); 
+        });
+        
+     
+    });
+</script>
+{% endblock %}
+
+

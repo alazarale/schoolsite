@@ -1,0 +1,264 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block style %}
+<style type="text/css">
+    ul.progress-bar {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        font-size: 0;
+        list-style: none;
+    }
+    
+    li.section {
+        display: inline-block;
+        padding-top: 45px;
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 16px;
+        color: gray;
+        vertical-align: top;
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    li.section:before {
+        content: 'x';
+        position: absolute;
+        top: 2px;
+        left: calc(50% - 15px);
+        z-index: 1;
+        width: 30px;
+        height: 30px;
+        color: white;
+        border: 2px solid white;
+        border-radius: 17px;
+        line-height: 30px;
+        background: gray;
+    }
+    .status-bar {
+        height: 2px;
+        background: gray;
+        position: relative;
+        top: 20px;
+        margin: 0 auto;
+    }
+    .current-status {
+        height: 2px;
+        width: 0;
+        border-radius: 1px;
+        background: mediumseagreen;
+    }
+    
+    @keyframes changeBackground {
+        from {background: gray}
+        to {background: mediumseagreen}
+    }
+    
+    li.section.visited:before {
+        content: '\2714';
+        animation: changeBackground .5s linear;
+        animation-fill-mode: forwards;
+    }
+    
+    li.section.visited.current:before {
+        box-shadow: 0 0 0 2px mediumseagreen;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div style="text-align: center">
+                    <h3 class="card-title">Creating parent account</h3>
+                </div>
+            </div>
+        
+        <div class="setup-progress-wrapper"></div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title">Link to a student</h4>
+            <div class="badge badge-success">Parent: {{ parent.user.first_name }} {{ parent.user.last_name }}</div>
+            <div class="badge badge-success">Status: {{ parent.relation_ship }}</div>    
+            <br><br>
+            <div class="form-group">
+                <label>Student ID:</label>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" style="color: #727272">SMI/</span>
+                            </div>
+                            <input type="text" id="stud-id" class="form-control" placeholder="Student ID">
+                            
+                            
+                        </div>
+                        <label style="color: red; display: none;" id="err-lbl"></label>
+                        <br>
+                    </div>
+                    <div class="col-sm-6">
+                        <button onclick="getStud()" class="btn btn-success btn-sm text-white mb-0 me-0" type="button"><i class="ti-search"></i> Search</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4 grid-margin stretch-card" id='s-res' style="display: none;">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center pb-3 border-bottom" >
+                            <div class="col-sm-3" id="stud-img">
+                                
+                            </div>
+                            <div class="ms-3" id="stud-info">
+
+                            </div>
+                            
+                        </div>
+                        <label style="color: red; display: none;" id="err-lbl-2"></label>
+                        {% csrf_token %}
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive" {% if parent.students.all.count == 0 %}style="display: none;"{% endif %} id="stud-table">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>
+                        User
+                      </th>
+                      <th>
+                        ID
+                      </th>
+                      <th>
+                        Name
+                      </th>
+                      <th>
+                        Grade
+                      </th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody id='final-stud'>
+                        {% for p in parent.students.all %}
+                        <tr>
+                            <td class="py-1">
+                                {% if p.profile_pic %}
+                                    <img src='{{ p.profile_pic.url }}' alt="image">
+                                {% else %}
+                                    <img src="{% static 'noprofile.png' %}" alt="image">
+                                {% endif %}
+                                
+                            </td>
+                            <td>{{ p.student.stud_id }}</td>
+                            <td>{{ p.student.user.first_name }} {{ p.student.user.last_name }}</td>
+                            <td>Grade {{ p.student.grade.first.grade.grade_num }}{{ p.student.grade.first.grade.section }}</td>
+                        </tr>
+                        {% endfor %}
+                  </tbody>
+                </table>
+                <br>
+                <div style="display: flex; justify-content: center">
+                    <a href="{% url 'ad_panel:admin_parent' %}" class="btn btn-success text-white mb-0 me-0">Finish</a>
+                </div>
+              </div>    
+            </div>
+        </div>
+    </div>
+</div>
+    <div class="col-md-2"></div>    
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    ProgressBar.singleStepAnimation = 500;
+    ProgressBar.init(
+      [ 'Create Parent',
+        'Connect Student',
+      ],
+      'Connect Student',
+      'setup-progress-wrapper' // created this optional parameter for container name (otherwise default container created)
+    );
+
+    function getStud(){
+        var e = document.getElementById("stud-id");
+        var stud = e.value;
+        $.ajax({
+            type: 'GET',
+            url: "get/",
+            data: {"stud": stud},
+            success: function (response) {
+                console.log(response);
+                if (response['stat'] == 'success'){
+                    $('#err-lbl').hide();
+                    $('#s-res').show();
+                    $('#stud-img').html('');
+                    $('#stud-info').html('');
+                    if (response['pp']){
+                        $("#stud-img").append("<img src='"+response['pp']+"'  alt='profile image'>");
+                    }else{
+                        $("#stud-img").append("<img src=\"{% static 'noprofile.png' %}\" class='img-sm rounded' alt='profile image'>");
+                    }
+                    $("#stud-info").append("<h6 class='mb-1'>"+response['name']+"</h6>");
+                    $("#stud-info").append("<small class='text-muted mb-0'>"+response['stud_id']+"</small><br>");
+                    $("#stud-info").append("<small class='text-muted mb-0'>Grade "+response['grade']+"</small>");
+                    $("#stud-info").append("<br><br><button type='button' onclick='addLink("+response['id']+")' class='btn btn-outline-success btn-fw'>Link</button>");
+                
+                }else{
+                    $('#err-lbl').show();
+                    $('#err-lbl').text(response['desc']);
+                }   
+                 
+                
+            },
+            error: function (response) {
+                
+            }
+        })
+    };
+
+    function addLink(pk){
+        $.ajax({
+            type:'POST',
+            url:'add/',
+            data:{
+                'stud_id': pk,
+                
+                'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+            },
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            complete: function(){
+            $('#loader').hide();
+            },
+            success:function(data){
+                if (data['stat']=='success'){
+                    $('#stud-table').show();
+                    if(data['pp']){
+                        $("#final-stud").append("<tr><td class=\"py-1\"><img src='"+data['pp']+"' alt=\"image\"></td><td>"+data['stud_id']+"</td><td>"+data['name']+"</td><td>Grade "+data['grade']+"</td></tr>");
+                    }else{
+                        $("#final-stud").append("<tr><td class=\"py-1\"><img src=\"{% static 'noprofile.png' %}\" alt=\"image\"></td><td>"+data['stud_id']+"</td><td>"+data['name']+"</td><td>Grade "+data['grade']+"</td></tr>"); 
+                    }
+                }else{
+                    $('#err-lbl-2').show();
+                    $('#err-lbl-2').text(data['desc']);
+                }
+                
+                
+            },
+            
+        });
+    }
+</script>
+{% endblock %}

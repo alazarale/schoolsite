@@ -1,0 +1,53 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+  
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<div class="row">
+    <div class="col-md-9">
+        <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Student Results</h4>
+            <div class="badge badge-success">{{ request.user.first_name }} {{ request.user.last_name }}</div>
+            <div class="badge badge-success">Grade {{ request.user.student.first.grade.first.grade.grade_num }} {{ request.user.student.first.grade.first.grade.section }}</div>
+            <div class="mt-4 py-2 border-top border-bottom">
+                <ul class="nav profile-navbar">
+                    <li class="nav-item">
+                        <a class="nav-link {% if rp == 'all' %}active{% endif %}" href="{% if rp == 'all' %}#{% else %}../{% endif %}">
+                        <i class="ti-user"></i>
+                        All Results
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if rp == 'submitted' %}active{% endif %}" href="{% if rp == 'submitted' %}#{% else %}../submitted-results/{% endif %}">
+                        <i class="ti-receipt"></i>
+                        Submitted
+                        </a>
+                    </li>
+                
+                </ul>
+            </div>
+            <div class="profile-feed">
+                {% block tc_body %}
+                {% endblock %}
+            </div>
+        </div>
+        </div><br><br><br>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Notifications</h5>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+</div>
+{% endblock %}
+
+

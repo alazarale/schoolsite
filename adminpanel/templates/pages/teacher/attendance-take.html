@@ -1,0 +1,268 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+
+    .preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ffdc1100;
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+ul.progress-bar {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    list-style: none;
+}
+
+li.section {
+    display: inline-block;
+    padding-top: 45px;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 16px;
+    color: gray;
+    vertical-align: top;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+li.section:before {
+    content: 'x';
+    position: absolute;
+    top: 2px;
+    left: calc(50% - 15px);
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    color: white;
+    border: 2px solid white;
+    border-radius: 17px;
+    line-height: 30px;
+    background: gray;
+}
+.status-bar {
+    height: 2px;
+    background: gray;
+    position: relative;
+    top: 20px;
+    margin: 0 auto;
+}
+.current-status {
+    height: 2px;
+    width: 0;
+    border-radius: 1px;
+    background: mediumseagreen;
+}
+
+@keyframes changeBackground {
+    from {background: gray}
+    to {background: mediumseagreen}
+}
+
+li.section.visited:before {
+    content: '\2714';
+    animation: changeBackground .5s linear;
+    animation-fill-mode: forwards;
+}
+
+li.section.visited.current:before {
+    box-shadow: 0 0 0 2px mediumseagreen;
+}
+    input[type="radio"].p {
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        border: 2px solid #34B1AA;
+        background-color: white;
+        -webkit-appearance: none; /*to disable the default appearance of radio button*/
+        -moz-appearance: none;
+      }
+      
+      input[type="radio"].a {
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        border: 2px solid #F95F53;
+        background-color: white;
+        -webkit-appearance: none; /*to disable the default appearance of radio button*/
+        -moz-appearance: none;
+      }
+
+      input[type="radio"].l {
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        border: 2px solid #ffaf00;
+        background-color: white;
+        -webkit-appearance: none; /*to disable the default appearance of radio button*/
+        -moz-appearance: none;
+      }
+
+      input[type="radio"]:focus { /*no need, if you don't disable default appearance*/
+        outline: none; /*to remove the square border on focus*/
+      }
+      
+      input[type="radio"]:checked.p { /*no need, if you don't disable default appearance*/
+        background-color: #34B1AA;
+      }
+      
+      input[type="radio"]:checked.a { /*no need, if you don't disable default appearance*/
+        background-color: #F95F53;
+      }
+
+      input[type="radio"]:checked.l { /*no need, if you don't disable default appearance*/
+        background-color: #ffaf00;
+      }
+
+      input[type="radio"]:checked ~ span:first-of-type {
+        color: white;
+      }
+      
+      label span.ps {
+        position: relative;
+        left: -23px;
+        font-size: 15px;
+        color: #34B1AA;
+      }
+
+      label span.as {
+        position: relative;
+        left: -23px;
+        font-size: 15px;
+        color: #F95F53;
+      }
+
+      label span.ls {
+        position: relative;
+        left: -23px;
+        font-size: 15px;
+        color: #ffaf00;
+      }
+      
+      label span {
+        position: relative;
+        top: -10px;
+      }
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Take Attendance</h4>
+            <div class="badge badge-success">Grade {{ grade.grade_num }}{{ grade.section }}</div>
+            <div class="badge badge-success">{{ today|date:"M d" }}</div>
+            <br> 
+            <div class="table-responsive">
+                
+                <table id="example" class="display" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>{{ today|date:"l" }}, {{ today|date:"M d" }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stud in grade.students.all %}
+                        <tr>
+                            <td>{{ stud.student.user.first_name }} {{ stud.student.user.last_name }}</td>
+                            <td>{{ stud.student.stud_id }}</td>
+                            <td>
+                                
+                                <label>
+                                    <input class="p" type="radio" value="Present" name="{{ stud.student.id }}"/>
+                                    <span class="ps">P</span>
+                                </label>
+                                <label>
+                                    <input class="a" type="radio" value="Absent" name="{{ stud.student.id }}"/>
+                                    <span class="as">A</span>
+                                </label>
+                                <label>
+                                    <input class="l" type="radio" value="Leave" name="{{ stud.student.id }}"/>
+                                    <span class="ls">L</span>
+                                </label>
+          
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>ID</th>
+                            <th>{{ today|date:"l" }}, {{ today|date:"M d" }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <br>
+            <div style="display: flex; justify-content: center">
+                {% csrf_token %}
+                <button id="sub" class="btn btn-primary me-2">Submit</button>
+            </div>
+        </div>
+        </div><br><br><br>
+    </div>
+    
+</div>
+{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        var table = $('#example').DataTable({
+            "paging": false,
+            columnDefs: [{
+                orderable: false,
+                targets: [2]
+            }]
+        });
+     
+        $('#sub').click( function() {
+            var data = table.$('input').serialize();
+            $.ajax({
+                type:'POST',
+                url:'add/',
+                data:{
+                    'data': data,
+                    'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+                },
+                beforeSend: function() {
+                    $('#loader').show();
+                },
+                complete: function(){
+                $('#loader').hide();
+                },
+                success:function(data){
+                    if(data['stat'] == "success"){
+                        window.location.href = '../../../attendance/';
+                    }
+                },
+            }); 
+            return false;
+        } );
+    } );
+</script>
+{% endblock %}
+
+
+
+
+
+

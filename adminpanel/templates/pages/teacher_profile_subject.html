@@ -1,0 +1,167 @@
+{% extends 'pages/admin_teacher_profile.html' %}
+{% load static %}
+{% block teacher_subject %}
+<br><br>
+
+<div class="table-responsive">
+    <table id="teacher-sub" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>
+            Grade
+          </th>
+          <th>
+            Subject
+          </th>
+          <th>
+            Action
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+          {% if teacher.subjects.all|length > 0 %}
+          {% for sub in teacher.subjects.all %}
+          <tr>
+            <td>
+              Grade {{ sub.gr_sub.grade.grade_num }}{{ sub.gr_sub.grade.section }}
+            </td>
+            <td>
+              {{ sub.gr_sub.subject.name}}
+            </td>
+            <td>
+                <button type="button" class="btn btn-outline-danger btn-rounded btn-icon">
+                    <i class="ti-trash text-dark"></i>
+                </button>
+            </td>
+          </tr> 
+          {% endfor %} 
+          {% endif %}
+      </tbody>
+    </table>
+    <br><br>
+    <div class="d-flex justify-content-center">
+        <div class="modal fade" id="sub-teacher" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Teaching class for: "{{ teacher.user.first_name }} {{ teacher.user.last_name }}"</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-1"></div>
+                        <div class="col-sm-10">
+                            <label class="col-sm-10 col-form-label">Select Subject</label>
+                            <select class="form-control" id="home-subject">
+                                <option value="" disabled selected hidden>Please Choose...</option>
+                                {% for subject in subjects %}
+                                    <option value="{{ subject.id }}">{{ subject.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="row" id="grade-check">
+
+                            </div>
+                        </div>
+                        <div class="col-sm-1"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="addSub()">Add</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                {% csrf_token %}    
+                </div>
+            </div>
+            </div>
+        </div>
+        <button class="btn btn-success me-1" data-bs-toggle="modal" data-bs-target="#sub-teacher">Add new</button>
+      </div>
+  </div>
+<br><br>
+{% endblock  %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        
+        $('#teacher-sub').DataTable();
+        
+        $("#home-subject").change(function(){
+            var e = document.getElementById("home-subject");
+            var subject = e.value;
+            $.ajax({
+                type: 'GET',
+                url: "get/",
+                data: {"subject": subject},
+                success: function (response) {
+                    $("#grade-check").html("");
+                    if (response['stat'] == 'nog'){
+                        $("#grade-check").append("<br><br><br><h5 style='color: red; margin-top: 10px'>Teacher is assigned for all grades with this subject.</h5>");
+                    }else{
+                        for (let i = 0; i < response['grades'].length; i++) {
+                            var gr = response['grades'][i];
+                            $("#grade-check").append("<div class='col-sm-4'><div class='form-check form-check-warning'><label class='form-check-label'><input name='su-gr' value='"+gr+"' type='checkbox' class='form-check-input'>Grade "+gr+"<i class='input-helper'></i></label></div></div>");
+                        }
+                    }
+                    
+                    
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            })
+        });
+    });
+
+    function addSub(){
+        var grades = [];
+        var subject = $("#home-subject").val();
+        $.each($("input[name='su-gr']:checked"), function(){            
+            grades.push($(this).val());
+        });
+        console.log(grades);
+        $.ajax({
+            type:'POST',
+            url:'add-sub/',
+            data:{
+                'subject': subject,
+                'grades[]': grades,
+                'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+            },
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            complete: function(){
+            $('#loader').hide();
+            },
+            success:function(data){
+                if(data['stat']=='success'){
+                    window.location.reload()
+                }
+            },
+        }); 
+    }
+
+    function addTecherHomeroom(){
+        var e = document.getElementById("home-grade");
+        var grade = e.value;
+        $.ajax({
+            type:'POST',
+            url:'add-grade/',
+            data:{
+                'grade': grade,
+                'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+            },
+            success:function(data){
+                console.log(data);
+                if (data['stat']=='success'){
+                    window.location.reload()
+                }else if(data['stat'] == 'fail'){
+                    
+                }
+            },
+        }); 
+    
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'main.html' %}
+{% block style %}
+{% endblock %}
+{% block banner %}
+    <section class="blog_categorie_area">
+    <div class="container">
+    <div class="row"> 
+        <div class="col-sm-1"></div>
+        <div class="col-sm-10">
+        <div class="section-top-border">
+            <h3 class="mb-30 title_color">Grade List Table</h3>
+            <div class="progress-table-wrap">
+                <div class="progress-table">
+                    <div class="table-head">
+                        <div class="serial">#</div>
+                        <div class="country">Subject Name</div>
+                        <div class="visit">Grades </div>
+                    </div>
+                    {% for subject in subjects %}
+                    <div class="table-row">
+                        <div class="serial">{{ forloop.counter }}</div>
+                        <div class="country">{{ subject.title }}</div>
+                        <div class="visit">
+                        {% for i in subject.grades_subject.all %}
+                        <span> {{ i.grade.grade_name }}, </span>
+                        {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>    
+        </div>
+        <div class="col-sm-1"></div>    
+    </div>
+    </div>
+    </section>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        
+    </script>
+{% endblock %}

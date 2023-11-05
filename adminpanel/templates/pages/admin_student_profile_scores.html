@@ -1,0 +1,151 @@
+{% extends 'pages/admin_student_profile.html' %}
+{% load static %}
+{% load res_filter %}
+{% block style %}
+<style type="text/css">
+    
+</style>
+{% endblock %}
+{% block profile %}
+<br>
+<div class="badge badge-outline-success" style="border-radius: 0px; padding-top: 0.8rem"><h3>First Semister</h3></div>
+<div class="table-responsive">
+    <table id="score-tbl" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>
+            Subject
+          </th>
+          <th>
+            50%
+          </th>
+          <th>
+            50%
+          </th>
+          <th>
+            100
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sub in subjects %}
+          <tr>  
+            <td>
+              <h6>{{ sub.subject.name }}</h6>
+            </td>
+            <td>
+                <h6>
+                    {% if res != None %}
+                    {% with res|flt_res_sub:sub.subject.id as first %}
+                        {% if first and first.first_50 %}{{ first.first_50 }} {% else %}-{% endif %}
+                    {% endwith %}
+                    {% else %}
+                    - 
+                    {% endif %}
+                </h6>
+            </td>
+            <td>
+                <h6>
+                    {% if res != None %}
+                    {% with res|flt_res_sub:sub.subject.id as second %}
+                        {% if second and second.second_50 %}{{ second.second_50 }} {% else %}-{% endif %}
+                    {% endwith %}
+                    {% else %}
+                    - 
+                    {% endif %}
+                </h6>
+            </td>
+            <td>
+              <h6>
+                {% if res != None %}
+                {% with res|flt_res_sub:sub.subject.id as tot %}
+                    {% if tot %}{{ tot|flt_st_add:'1'  }} {% else %}-{% endif %}
+                {% endwith %}
+                {% else %}
+                - 
+                {% endif %}
+            </h6>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+<br><br><br>
+<div class="badge badge-outline-success" style="border-radius: 0px; padding-top: 0.8rem"><h3>Second Semister</h3></div>
+<div class="table-responsive">
+    <table id="score-2nd-tbl" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>
+            Subject
+          </th>
+          <th>
+            50%
+          </th>
+          <th>
+            50%
+          </th>
+          <th>
+            100
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sub in subjects %}
+          <tr>  
+            <td>
+              <h6>{{ sub.subject.name }}</h6>
+            </td>
+            <td>
+                <h6>
+                    {% if res != None %}
+                    {% with res|flt_res_sub:sub.subject.id as third %}
+                        {% if third and third.third_50 %}{{ third.third_50 }} {% else %}-{% endif %}
+                    {% endwith %}
+                    {% else %}
+                    - 
+                    {% endif %}
+                </h6>
+            </td>
+            <td>
+                <h6>
+                    {% if res != None %}
+                    {% with res|flt_res_sub:sub.subject.id as forth %}
+                        {% if forth and forth.forth_50 %}{{ forth.forth_50 }} {% else %}-{% endif %}
+                    {% endwith %}
+                    {% else %}
+                    - 
+                    {% endif %}
+                </h6>
+            </td>
+            <td>
+                <h6>
+                    {% if res != None %}
+                    {% with res|flt_res_sub:sub.subject.id as tot %}
+                        {% if tot %}{{ tot|flt_st_add:'2'  }} {% else %}-{% endif %}
+                    {% endwith %}
+                    {% else %}
+                    - 
+                    {% endif %}
+                </h6>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+</div>
+<br><br>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function () {
+      $('#score-tbl').DataTable({
+        "paging": false,
+    });
+    $('#score-2nd-tbl').DataTable({
+        "paging": false,
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% load res_filter %}
+{% block style %}
+<style type="text/css">
+    th::after {
+        content: none;
+     }
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Attendance</h4>
+            <div class="badge badge-success">Grade {{ grade.grade_num }}{{ grade.section }}</div>
+            <div class="badge badge-success">HomeRoom</div>
+            <br><br>
+            {% if at|length == 0 %}
+                <a href="{% url 'ad_panel:attendance_take' request.user.teacher.first.home_room.first.grade.id %}" class="btn btn-success">Take Todays Attendance</a>
+            {% endif %}
+            <div class="table-responsive">
+                <table id="att-table" class="display" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th class="dd">
+                        Name
+                      </th>
+                      {% for d in dates %}
+                      <th>
+                        {% now "M d" as nw %}
+                          {% if d|date:"M d" == nw %}
+                            <div class="badge badge-opacity-primary me-3" style="border-radius: 0px">
+                                {{ d|date:"l" }} 
+                                <p>({{ d|date:"M d" }})</p>
+                            </div>
+                          {% else %}
+                            <div class="badge badge-opacity-success me-3" style="border-radius: 0px">
+                                {{ d|date:"l" }} 
+                                <p>({{ d|date:"M d" }})</p>
+                            </div>
+                          {% endif %}
+                             
+                      </th>
+                      {% endfor %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                      {% for stud in request.user.teacher.first.home_room.first.grade.students.all.reverse %}
+                      <tr>
+                        <td class="py-1">
+                          {{ stud.student.user.first_name }} {{ stud.student.user.last_name }}
+                        </td>
+                        {% for d in dates %}  
+                        <th>
+                            {% if attendances|flt_att:d|flt_att_st:stud.student == "Present" %}
+                            <div class="badge badge-pill badge-outline-success" style="margin-left:20%">P</div>
+                            {% elif attendances|flt_att:d|flt_att_st:stud.student == "Absent" %}
+                            <div class="badge badge-pill badge-outline-danger" style="margin-left:20%">A</div>
+                            {% elif attendances|flt_att:d|flt_att_st:stud.student == "Leave" %}
+                            <div class="badge badge-pill badge-outline-warning" style="margin-left:20%">L</div>
+                            {% endif %}
+                        </th>
+                        {% endfor %}
+                      </tr>
+                      {% endfor %}
+                    
+                    
+                  </tbody>
+                </table>
+            </div>
+        </div>
+        </div><br><br><br>
+    </div>
+    
+</div>
+{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#att-table').DataTable({
+            "paging": false,
+        });
+    } );
+    $('th:after').css('content','none');
+</script>
+{% endblock %}
+
+

@@ -1,0 +1,158 @@
+{% extends 'pages/students/results.html' %}
+{% load static %}
+{% load res_filter %}
+{% block style %}
+<style type="text/css">
+  
+    .preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ffdc1100;
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+ul.progress-bar {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    list-style: none;
+}
+
+li.section {
+    display: inline-block;
+    padding-top: 45px;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 16px;
+    color: gray;
+    vertical-align: top;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+li.section:before {
+    content: 'x';
+    position: absolute;
+    top: 2px;
+    left: calc(50% - 15px);
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    color: white;
+    border: 2px solid white;
+    border-radius: 17px;
+    line-height: 30px;
+    background: gray;
+}
+.status-bar {
+    height: 2px;
+    background: gray;
+    position: relative;
+    top: 20px;
+    margin: 0 auto;
+}
+.current-status {
+    height: 2px;
+    width: 0;
+    border-radius: 1px;
+    background: mediumseagreen;
+}
+
+@keyframes changeBackground {
+    from {background: gray}
+    to {background: mediumseagreen}
+}
+
+li.section.visited:before {
+    content: '\2714';
+    animation: changeBackground .5s linear;
+    animation-fill-mode: forwards;
+}
+
+li.section.visited.current:before {
+    box-shadow: 0 0 0 2px mediumseagreen;
+}
+</style>
+{% endblock %}
+{% block tc_body %}
+<div class="mt-4">
+    <div class="accordion accordion-multi-colored" id="accordion-6" role="tablist">
+        {% for subject in subjects %}
+        <div class="card">
+            <div class="card-header" role="tab" id="heading-{{ subject.subject.id }}">
+                <h6 class="mb-0">
+                <a data-bs-toggle="collapse" href="#collapse-{{ subject.subject.id }}" aria-expanded="false" aria-controls="collapse-{{ subject.subject.id }}" class="collapsed">
+                    {{ subject.subject.name }}
+                </a>
+                </h6>
+            </div>
+            <div id="collapse-{{ subject.subject.id }}" class="collapse" role="tabpanel" aria-labelledby="heading-{{ subject.subject.id }}" data-bs-parent="#accordion-6" style="background-color: white;">
+                <div class="card-body">
+                <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Out of</th>
+                        <th>Scored</th>
+                        <th>%</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% with request.user.student.first.grade.first.grade|flt_gr_sub:subject.subject.id as grsub %}
+                            {% with grsub|flt_res_stud:request.user.student.first as res %}
+                                {% for d in res.reverse %}
+                                <tr>
+                                    <td><b style="color: green">{{ d.result.description }}</b></td>
+                                    <td>{{ d.result.out_of }}</td>
+                                    <td><b style="color: green">{{ d.score }}<b></td>
+                                    <td></td>
+                                </tr>
+                                {% endfor %}
+                            {% endwith %}
+                        {% endwith %}
+                        {% for gs in subject.grades.all %}
+                        <tr>
+                            <td></td>
+                            <td>Grade {{ gs.grade.grade_num }}{{ gs.grade.section }}</td>
+                            {% if gs.teacher.all|length > 0 %}
+                            <td><a href="{% url 'ad_panel:admin_teacher_profile' gs.teacher.first.teacher.id  %}">{{ gs.teacher.first.teacher.user.first_name }} ({{ gs.teacher.first.teacher.teacher_id }})</td>
+                            {% else %}
+                            <td>
+                                <h6>Not assigned</h6>
+                                <button type="button" onclick="addSubject('{{ gs.grade.grade_num }}{{ gs.grade.section }}', '{{ subject.name }}')" class="btn btn-outline-secondary btn-sm">Assign</button>
+                              </td>
+                            {% endif %}
+                            
+                            <td><button type="button" class="btn btn-outline-secondary btn-icon-text btn-md">
+                                Edit
+                                <i class="ti-file btn-icon-append"></i>                          
+                              </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    
+</script>
+{% endblock %}
+

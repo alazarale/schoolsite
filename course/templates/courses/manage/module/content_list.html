@@ -1,0 +1,88 @@
+{%	extends	"other.html" %}
+{%  load courset %}
+{% block style %}
+     <style type="text/css">
+        #modules{
+            list-style: none;
+            padding-inline-start: 0px;
+        }
+        .selected{
+            background-color: #cbcdce;
+            padding-left: 20px;
+        }
+        #modules li{
+            border-bottom: 1px solid #dcd8d8;
+        }
+        #modules li:hover{
+            background-color: #dee0e0;
+            padding-left: 5px;
+        }
+        #modules .selected:hover{
+            background-color: #cbcdce;
+            padding-left: 20px;
+        }
+
+     </style>
+{% endblock %}
+{% block container %}
+    {%	with course=module.course	%}
+        <section class="blog_categorie_area">
+        <div class="container">
+        <h1 style="text-align: center">Course	"{{ course.title }}"</h1><br><hr>
+            <div class="row">
+                <div class="col-md-4">
+                <div class="blog_right_sidebar">
+                    <h3 style="text-align: center">Modules</h3>
+                    <ul	id="modules">
+                        {%	for	m in course.modules.all	%}
+                            <li	data-id="{{ m.id }}"	{%	if	m == module	%}class="selected"{% endif %}>
+                                <a href="{% url	"module_content_list" m.id %}" style="color: #5d5959">
+                                    <span>Module<span class="order">{{ m.order|add:1 }}</span></span>
+                                    <br>
+                                    <span style="color: #9a9696">{{ m.title }}</span>
+                                </a>
+                            </li>
+                        {% empty %}
+                            <li>No modules yet.</li>
+                        {% endfor %}
+                    </ul>
+                    <p>
+                        <a href="{% url "course_module_update" course.id	%}">Edit modules</a>
+                    </p>
+                </div>
+                </div>
+            <div class="col-md-8">
+                <h2>Module {{ module.order|add:1 }}: {{ module.title }}</h2>
+                <h3>Module contents:</h3>
+                    <div id="module-contents">
+                        {% for content in module.contents.all	%}
+                            <div data-id="{{ content.id	}}" style="border: 1px solid #d9d6d6; padding: 10px">
+                                {% with item=content.item %}
+                                    <p>{{ item }} ({{ item|model_name }})</p>
+
+                                    <form action="{% url "module_content_delete" content.id	%}" method="post">
+                                        <a href="{% url 'module_content_update' module.id item|model_name item.id %}" class="genric-btn primary circle">Edit</a>
+                                        <input class="genric-btn danger circle" type="submit" value="Delete">
+                                        {% csrf_token %}
+                                    </form>
+                                {% endwith %}
+                            </div>
+                            <br>
+                        {% empty %}
+                            <p>This	module has no contents yet.</p>
+                        {% endfor %}
+                    <br>
+                    </div>
+                <h3>Add	new	content:</h3><br>
+                <ul	class="content-types nav ">
+                    <li><a href="{%	url	"module_content_create"	module.id "text" %}" class="genric-btn success-border">Text</a></li>
+                    <li><a href="{%	url	"module_content_create"	module.id "image" %}" class="genric-btn success-border">Image</a></li>
+                    <li><a href="{%	url	"module_content_create"	module.id "video" %}" class="genric-btn success-border">Video</a></li>
+                    <li><a href="{%	url	"module_content_create"	module.id "file" %}" class="genric-btn success-border">File</a></li>
+                </ul>
+            </div>
+            </div>
+        </div>
+        </section>
+    {% endwith %}
+{% endblock	%}

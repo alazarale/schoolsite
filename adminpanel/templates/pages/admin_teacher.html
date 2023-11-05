@@ -1,0 +1,104 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+  table.dataTable tbody th, table.dataTable tbody td {
+    padding: 10px 10px; /* e.g. change 8x to 4px here */
+}
+.dataTables_wrapper .dataTable .btn{
+  padding: inherit;
+}
+.dataTables_wrapper .dataTables_filter input{
+  border: 1px solid #dee2e6;
+  font-weight: 400;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  height: 2rem;
+}
+
+.dataTables_wrapper .dataTable .btn i{
+  margin: inherit;
+}
+
+.dataTables_wrapper label{
+  font-size: 1rem
+}
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<div class="col-lg-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+        <div class="d-sm-flex justify-content-between align-items-start">
+            <div>
+                <h4 class="card-title">List of Students</h4>
+                <div class="badge badge-success">Total of {{ teachers|length }} Teachers</div>
+            </div>
+            <div>
+                <a class="btn btn-success btn-md text-white mb-0 me-0" href="{% url 'ad_panel:admin_teacher_add' %}"><i class="mdi mdi-account-plus"></i>Add new teacher</a>
+            </div>
+        </div>
+      <br><br>
+      <div class="table-responsive">
+        <table id="teacher-tbl" class="display" style="width:100%">
+          <thead>
+            <tr>
+              <th>
+                ID
+              </th>
+              <th>
+                Full Name
+              </th>
+              <th> 
+                Phone #
+              </th>
+              <th>
+                Status
+              </th>
+              <th>
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for teacher in teachers %}
+              <tr>  
+                <td>
+                  <h6 style="color:#6e6d6d">{{ teacher.teacher_id }}</h6>
+                </td>
+                <td>
+                  <h6 style="color:#6e6d6d">{{ teacher.user.first_name }} {{ teacher.user.last_name }}</h6>
+                </td>
+                <td>
+                  <h6 style="color:#6e6d6d">{{ teacher.phone }}</h6>
+                </td>
+                
+                <td>
+                  <h6 style="color:#6e6d6d">{{ teacher.status }}</h6>
+                </td>
+                <td>
+                  <a class="btn btn-outline-info btn-icon-text" href="{% url 'ad_panel:admin_teacher_profile' teacher.id %}">
+                    Profile
+                    <i class="ti-file btn-icon-append"></i>                          
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <br><br>
+    </div>
+  </div>
+</div>
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    $(document).ready(function () {
+      $('#teacher-tbl').DataTable();
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'pages/admin_student_profile.html' %}
+{% load static %}
+{% load res_filter %}
+{% block style %}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" rel='stylesheet' />
+<style type="text/css">
+  a{
+    color: inherit;
+    text-decoration: inherit;
+  }
+  .fc .fc-daygrid-day.fc-day-today {
+    background-color: var(--fc-today-bg-color,rgba(5,195,251,.1))
+  }
+</style>
+{% endblock %}
+{% block profile %}
+<br><br>
+<div id='calendar'></div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+    
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek'
+          },
+        // can click day/week names to navigate views
+          businessHours: true, // display business hours
+          selectable: true,
+          events: [
+            {% for att in atts %}
+                {
+                    start: "{{ att.att_date|date:'Y-m-d' }}",
+
+                    overlap: false,
+                    display: 'background',
+                    {% if att.stat == 'Present' %}
+                        color: "#34B1AA"
+                    {% elif att.stat == 'Absent' %}
+                        color: "#F95F53"
+                    {% elif att.stat == 'Leave' %}
+                        color: "#E29E09"
+                    {% endif %}
+                    
+                },
+            {% endfor %}
+          ]
+        });
+    
+        calendar.render();
+      });
+</script>
+{% endblock %}

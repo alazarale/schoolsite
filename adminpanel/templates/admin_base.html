@@ -1,0 +1,31 @@
+{% extends 'admin_static.html' %}
+{% load static %}
+{% block body %}
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    {% include 'admin_topnav.html' %}
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_settings-panel.html -->
+        <!-- partial -->
+        <!-- partial:partials/_sidebar.html -->
+        {% include 'admin_sidenav.html' %}
+        <!-- partial -->
+        <div class="main-panel">
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer">
+            <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Copyright © 2021. All rights reserved.</span>
+            </div>
+        </footer>
+        <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+{% endblock body %}

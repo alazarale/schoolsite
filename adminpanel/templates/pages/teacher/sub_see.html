@@ -1,0 +1,47 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+  
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Student Results</h4>
+            <div class="badge badge-success">Grade {{ gr_sub.grade.grade_num }}{{ gr_sub.grade.section }}</div>
+            <div class="badge badge-success">{{ gr_sub.subject.name }}</div>
+            <div class="mt-4 py-2 border-top border-bottom">
+                <ul class="nav profile-navbar">
+                    <li class="nav-item">
+                        <a class="nav-link {% if rp == 'all' %}active{% endif %}" href="{% if rp == 'all' %}#{% else %}../{% endif %}">
+                        <i class="ti-user"></i>
+                        All Results
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if rp == 'submitted' %}active{% endif %}" href="{% if rp == 'submitted' %}#{% else %}submitted/{% endif %}">
+                        <i class="ti-receipt"></i>
+                        Submitted
+                        </a>
+                    </li>
+                
+                </ul>
+            </div>
+            <div class="profile-feed">
+                {% block tc_body %}
+                {% endblock %}
+            </div>
+        </div>
+        </div><br><br><br>
+    </div>
+    
+</div>
+{% endif %}
+</div>
+{% endblock %}
+
+

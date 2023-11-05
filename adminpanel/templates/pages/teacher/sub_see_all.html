@@ -1,0 +1,224 @@
+{% extends 'pages/teacher/sub_see.html' %}
+{% load static %}
+{% load res_filter %}
+{% block style %}
+<style type="text/css">
+  
+    .preloader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ffdc1100;
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+ul.progress-bar {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    list-style: none;
+}
+
+li.section {
+    display: inline-block;
+    padding-top: 45px;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 16px;
+    color: gray;
+    vertical-align: top;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+li.section:before {
+    content: 'x';
+    position: absolute;
+    top: 2px;
+    left: calc(50% - 15px);
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    color: white;
+    border: 2px solid white;
+    border-radius: 17px;
+    line-height: 30px;
+    background: gray;
+}
+.status-bar {
+    height: 2px;
+    background: gray;
+    position: relative;
+    top: 20px;
+    margin: 0 auto;
+}
+.current-status {
+    height: 2px;
+    width: 0;
+    border-radius: 1px;
+    background: mediumseagreen;
+}
+
+@keyframes changeBackground {
+    from {background: gray}
+    to {background: mediumseagreen}
+}
+
+li.section.visited:before {
+    content: '\2714';
+    animation: changeBackground .5s linear;
+    animation-fill-mode: forwards;
+}
+
+li.section.visited.current:before {
+    box-shadow: 0 0 0 2px mediumseagreen;
+}
+</style>
+{% endblock %}
+{% block tc_body %}
+<br>
+<div>
+    <div style="display: flex; justify-content: left">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#result-modal"><i class="mdi mdi-account-plus"></i>&nbsp;&nbsp;Add new result</button>
+    </div>
+    <div class="modal fade" id="result-modal" tabindex="-1" aria-labelledby="ModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="ModalLabel">Add new result</h5>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Grade</label>
+                                <input type="text" class="form-control" id="grade-lbl" value="{{ gr_sub_t.gr_sub.grade.grade_num }}{{ gr_sub_t.gr_sub.grade.section }}" style="cursor: not-allowed;" disabled>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="exampleInputName1">Subject</label>
+                                <input type="text" class="form-control" id="subject-lbl" value="{{ gr_sub_t.gr_sub.subject.name }}" style="cursor: not-allowed;" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-7">
+                        <div class="form-group">
+                            <label for="exampleInputName1">Description</label>
+                            <input type="text" class="form-control" id="desc">
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label for="exampleInputName1">Out of?</label>
+                            <input type="number" step="0.1" class="form-control" id="out-of">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="privacy">Privacy</label>
+                    <select class="form-control" id="privacy">
+                      <option value="0">None</option>
+                      <option value="1">Student Only</option>
+                      <option value="2">Both Student and Parent</option>
+                    </select>
+                </div>
+                {% csrf_token %}
+            </div>
+            <div class="modal-footer">
+              <button type="button" onclick="addResult()" class="btn btn-success">Add</button>
+              <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    {% if results|length > 0 %}
+    <div class="table-responsive">
+    <table id="all-result" class="display" >
+        <thead>
+            <tr>
+                <th>Name</th>
+                {% for result in results.reverse %}
+                <th data-toggle="tooltip" data-placement="top" title="{{ result.description }}">
+                    {{ result.out_of }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students.reverse %}
+            <tr>
+                <th>{{ student.student.user.first_name }} {{ student.student.user.last_name }}</th>
+                
+                {% for result in results.reverse %}
+                    <th>{{ result|flt:student.student.stud_id }}</th>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                
+                {% for result in results.reverse %}
+                <th>{{ result.out_of }}</th>
+                {% endfor %}
+            </tr>
+        </tfoot>
+    </table>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    function addResult(){
+        var desc = $("#desc").val();
+        var out_of = $("#out-of").val();
+        var privacy = $("#privacy").val();
+        $.ajax({
+            type:'POST',
+            url:'add-result/',
+            data:{
+                'desc': desc,
+                'out_of': out_of,
+                'privacy': privacy,
+                'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+            },
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            complete: function(){
+            $('#loader').hide();
+            },
+            success:function(data){
+                if (data['stat'] == 'success'){
+                    window.location.href = "784"+data['id']+"65/";
+                }
+            },
+        }); 
+    }
+    $(document).ready(function() {
+        $('#all-result').DataTable(
+            {
+                "paging": false,
+            }
+        );
+    } );
+</script>
+{% endblock %}
+

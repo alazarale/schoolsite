@@ -1,0 +1,41 @@
+{% extends 'other.html' %}
+{% block where %}
+<div class="page_link">
+    <a href="index.html">Courses</a>
+    <a href="blog.html">My courses</a>
+    <a href="blog.html">
+        {% if object %}
+            Edit "{{ object.title }}"
+        {% else %}
+            Create
+        {% endif %}
+    </a>
+</div>
+{% endblock %}
+{% block container %}
+    <section class="blog_categorie_area">
+    <div class="container">
+        <h1 style="text-align: center">
+            Edit "{{ course.title }}"
+        </h1><br><br>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <h2 style="text-align: center;">Course modules</h2><br>
+                <form action="." method="post" enctype="multipart/form-data">
+                    {% for each in formset %}
+                    {{ each }}<br><br><br>
+                    {% endfor %}
+                    {{ formset.management_form }}
+                    {% csrf_token %}
+                    <br>
+                    <p><input class="genric-btn primary circle" type="submit" value="Save Modules"></p>
+                </form>
+            </div>
+            <div class="col-md-2">
+            </div>
+        </div>
+    
+    </div>
+    </section>
+{% endblock %}

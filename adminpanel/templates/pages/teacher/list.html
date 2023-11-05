@@ -1,0 +1,84 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+  
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title">Teaching grades list</h4>
+            <p class="card-description">
+                List of grades that you are assigned for.</code>
+            </p>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            
+                        </th>
+                        <th>
+                            Grade
+                        </th>
+                        <th>
+                            Section
+                        </th>
+                        <th>
+                            Subject
+                        </th>
+                        <th>
+                            Total students
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for grade in teaching_grades %}
+                    <tr>
+                        <td class="py-1">
+                            <img src="{% static grade.gr_sub.grade.grade_num|slugify %}.png" alt="image">
+                        </td>
+                        <td>
+                            Grade {{ grade.gr_sub.grade.grade_num }}
+                        </td>
+                        <td style="text-align: center;">
+                            <h4>{{ grade.gr_sub.grade.section }}</h4>
+                        </td>
+                        <td>
+                            {{ grade.gr_sub.subject.name }}
+                        </td>
+                        <td style="text-align: center;">
+                            <h4>{{ grade.gr_sub.grade.students.all|length }}</h4>
+                        </td>
+                        <td>
+                            <a href="{% url 'ad_panel:teaching_sub_see' grade.gr_sub.subject.name grade.gr_sub.grade.id %}" class="btn btn-outline-info btn-icon-text">
+                                View
+                                <i class="ti-eye btn-icon-append"></i>                                                                              
+                            </a>
+                           
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    
+</script>
+{% endblock %}
+

@@ -1,0 +1,198 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block style %}
+<style type="text/css">
+    
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ffdc1100;
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+    ul.progress-bar {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        font-size: 0;
+        list-style: none;
+    }
+    
+    li.section {
+        display: inline-block;
+        padding-top: 45px;
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 16px;
+        color: gray;
+        vertical-align: top;
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    li.section:before {
+        content: 'x';
+        position: absolute;
+        top: 2px;
+        left: calc(50% - 15px);
+        z-index: 1;
+        width: 30px;
+        height: 30px;
+        color: white;
+        border: 2px solid white;
+        border-radius: 17px;
+        line-height: 30px;
+        background: gray;
+    }
+    .status-bar {
+        height: 2px;
+        background: gray;
+        position: relative;
+        top: 20px;
+        margin: 0 auto;
+    }
+    .current-status {
+        height: 2px;
+        width: 0;
+        border-radius: 1px;
+        background: mediumseagreen;
+    }
+    
+    @keyframes changeBackground {
+        from {background: gray}
+        to {background: mediumseagreen}
+    }
+    
+    li.section.visited:before {
+        content: '\2714';
+        animation: changeBackground .5s linear;
+        animation-fill-mode: forwards;
+    }
+    
+    li.section.visited.current:before {
+        box-shadow: 0 0 0 2px mediumseagreen;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div style="text-align: center">
+                    <h3 class="card-title">Academic Year Setup</h3>
+                </div>
+            </div>
+        
+        <div class="setup-progress-wrapper"></div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class='col-sm-1'></div>
+    <div class="col-md-10 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title">All Students</h4>
+            <p class="card-description">
+                Student Setup
+            </p>
+            <form class="form-group">
+                <div class="row">  
+                    <div class="col-sm-6">
+                        <input style="height: auto;" class="form-control file-upload-info" type="file" id="myFile" name="filename">
+                        <div id="err-fl"></div> 
+                    </div>
+                    <div class="col-sm-6">
+                        <a onclick="addStudent()" class="btn btn-info mb-2">Add</a><br>
+                    </div>
+                </div>
+            </form>
+            <div>
+                {% csrf_token %}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>
+                        Students account info excel
+                        </th>
+                        <th>
+                        Action
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="exc-table">
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <div style="text-align: center">
+                <a class="btn btn-primary mb-2" href="{% url 'ad_panel:admin_main' %}">Finish</a>
+            </div>
+            </div> 
+        </div>
+    </div>
+    <div class='col-sm-1'></div>
+</div>
+</div>
+  
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    ProgressBar.singleStepAnimation = 500;
+    ProgressBar.init(
+      [ 'Year Setup',
+        'Grade Setup',
+        'Adding Subjects',
+        'Adding Students',
+      ],
+      'Adding Students',
+      'setup-progress-wrapper' // created this optional parameter for container name (otherwise default container created)
+    );
+
+    function addStudent(){
+        var form_data = new FormData();
+		var ins = document.getElementById('myFile').files.length;
+        if(ins == 0) {
+            $('#err-fl').html('<span style="color:red">Select at least one file</span>');
+            return;
+        }
+        $('#err-fl').html('');
+        csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
+        form_data.append("files[]", document.getElementById('myFile').files[0]);
+        form_data.append("csrfmiddlewaretoken", csrf_token);
+
+        $.ajax({
+            url: 'students/add/', // point to server-side URL
+            dataType: 'json', // what to expect back from server
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: form_data,
+			type: 'post',
+            beforeSend: function() {
+                $('#loader').show();
+            },
+            complete: function(){
+            $('#loader').hide();
+            },
+            success:function(data){
+                $("#exc-table").append("<tr><td>"+data["fl_title"]+"</td><td><a class='btn btn-success btn-icon-text' href='../../.."+data['fl_url']+"'><i class='ti-download'></i> Download</a></td></tr>");
+                document.getElementById("myFile").value=null;
+            },
+        });
+    }
+</script>
+{% endblock %}

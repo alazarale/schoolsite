@@ -1,0 +1,122 @@
+[
+  {
+    "rank": " #1",
+    "name": "ServiceNow",
+    "rate": "4.6",
+    "first pro": "Diversity, excellent product, supports customers well, puts customers at the very heart of everything we do."
+  },
+  {
+    "rank": " #2",
+    "name": "AND Digital",
+    "rate": "4.6",
+    "first pro": "Genuine desire to put people first and look after their wellbeing. Plenty of progression opportunities."
+  },
+  {
+    "rank": " #3",
+    "name": "Salesforce",
+    "rate": "4.6",
+    "first pro": "Incredible culture, endless avenues to grow, learn and share with passionate colleagues."
+  },
+  {
+    "rank": " #4",
+    "name": "Immediate Media Company ",
+    "rate": "4.5",
+    "first pro": "A caring and supportive environment and a culture of honesty/transparency (especially obvious at the height of the pandemic)."
+  },
+  {
+    "rank": " #5",
+    "name": "Abcam",
+    "rate": "4.5",
+    "first pro": "Great work-life balance and flexibility is very good. People are great and the team I'm in is awesome. "
+  },
+  {
+    "rank": " #6",
+    "name": "McKinsey & Company",
+    "rate": "4.5",
+    "first pro": "Diverse, collaborative and stimulating environment."
+  },
+  {
+    "rank": " #7",
+    "name": "Adobe",
+    "rate": "4.5",
+    "first pro": "Generous employee perks, considered values, well connected network of employees. Strong & thoughtful leadership team."
+  },
+  {
+    "rank": " #8",
+    "name": "VMware",
+    "rate": "4.5",
+    "first pro": "Excellent senior leadership. Fantastic support during the pandemic. Great vision for the company."
+  },
+  {
+    "rank": " #9",
+    "name": "Arm",
+    "rate": "4.5",
+    "first pro": "Innovative technology, huge impact on the world, meritocratic culture, diverse workforce with active conversation on inclusivity."
+  },
+  {
+    "rank": " #10",
+    "name": "Meta",
+    "rate": "4.5",
+    "first pro": "There’s an inclusive, welcoming and open culture and enough autonomy to develop new projects and really play to your strengths."
+  },
+  {
+    "rank": " #11",
+    "name": "Novuna",
+    "rate": "4.5",
+    "first pro": "Professionally challenging environment. Open and honest culture, good company core values. Great benefits package."
+  },
+  {
+    "rank": " #12",
+    "name": "Dishoom",
+    "rate": "4.5",
+    "first pro": "The team is super professional and all willing to work for each other to get the job done. "
+  },
+  {
+    "rank": " #13",
+    "name": "Microsoft",
+    "rate": "4.4",
+    "first pro": "Great culture with a purpose that everyone gets behind. Good team mentality with multiple resources to help you be successful. "
+  },
+  {
+    "rank": " #14",
+    "name": "Mastercard",
+    "rate": "4.4",
+    "first pro": "Great colleagues. Training and courses available. Annual bonuses. Great career progression. Flexible working hours."
+  },
+  {
+    "rank": " #15",
+    "name": "Dell Technologies",
+    "rate": "4.4",
+    "first pro": "Supportive management all the way to the top. Progression opportunity. Skills development."
+  },
+  {
+    "rank": " #16",
+    "name": "Zurich Insurance",
+    "rate": "4.4",
+    "first pro": "Truly inspiring company, real work life balance for everyone, proper diversity and inclusive company, great benefits and pension."
+  },
+  {
+    "rank": " #17",
+    "name": "Awin",
+    "rate": "4.4",
+    "first pro": "Great company culture , great clients, great platform, well supported by management and a 4-day working week."
+  },
+  {
+    "rank": " #18",
+    "name": "Google",
+    "rate": "4.4",
+    "first pro": "The perks, opportunities, culture and people's options for learning, developing and progressing professionally are heavily prioritised...."
+  },
+  {
+    "rank": " #19",
+    "name": "SAP",
+    "rate": "4.4",
+    "first pro": "The best business software company in the world that truly believes in diversity and supporting its employees."
+  },
+  {
+    "rank": " #20",
+    "name": "Wise",
+    "rate": "4.4",
+    "first pro": "Every single person I've met at Wise has been smart, interesting and curious to learn."
+  },
+]

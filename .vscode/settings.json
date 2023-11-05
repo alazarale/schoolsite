@@ -1,0 +1,15 @@
+{
+    "launch": {},
+    "python.pythonPath": "C:\\Users\\alazar\\Documents\\pro\\schoolonline\\Scripts",
+    "team.showWelcomeMessage": false,
+    "editor.formatOnSave": true,
+    "python.linting.pycodestyleEnabled": false,
+    "python.linting.pylintPath": "C:\\Users\\alazar\\Documents\\pro\\schoolonline\\Scripts\\pylint",
+    "python.linting.pylintArgs": [
+        "--load-plugins",
+        "pylint_django"
+    ],
+    "python.linting.pylintEnabled": true,
+    "emmet.triggerExpansionOnTab": true,
+    "python.linting.enabled": true
+}

@@ -1,0 +1,21 @@
+{% extends 'other.html' %}
+{% block container %}
+    <section class="blog_categorie_area">
+    <div class="container">
+        <h1 style="text-align: center;">Delete Course "{{ object.title }}"</h1>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <form action="." method="post">
+                    {%  csrf_token %}
+                    <p>Are you sure you wnat to delete "{{ object }}"</p>
+                    <input class="genric-btn danger circle" type="submit" value="Confirm">
+                    <a href="{% url 'manage_course_list' %}" class="genric-btn primary circle">Cancel</a>
+                </form>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+    </section>
+    
+{% endblock %}

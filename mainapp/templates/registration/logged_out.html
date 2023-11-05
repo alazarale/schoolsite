@@ -1,0 +1,42 @@
+{% extends 'admin_static.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block style %}
+<style>
+    .bgg {
+    background-image: url("{% static 'bg.jpg' %}");
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper bgg">
+            <div class="col-lg-4 mx-auto" style="background-color: white; margin:2rem 0rem">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                <div class="brand-logo">
+                <img src="{% static 'adminpanel/images/logo.svg' %}" alt="logo">
+                </div>
+                <div>
+                    <br><br>
+                    <h3>Logged out</h1>
+                    <p>you have logged out</p>
+                    <br>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="{% url 'login' %}" class="btn btn-success">Login</a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'mainapp:home' %}" class="btn btn-primary circle">Home</a>
+                    </div>
+                </div>
+                
+            </div>
+            </div>
+        <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+{% endblock body %}

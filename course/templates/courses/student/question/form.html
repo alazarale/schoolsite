@@ -1,0 +1,26 @@
+{% extends 'other.html' %}
+{% block where %}
+
+{% endblock %}
+{% block container %}
+    <section class="blog_categorie_area">
+    <div class="container">
+        <h1 style="text-align: center">
+        Add question
+        </h1><hr>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <h2 style="text-align: center">Module "{{ module.title }}"</h2><br>
+                <form action="" method="post">
+                    {{ que_form }}
+                    {% csrf_token %}
+                    <br>
+                    <p style="text-align: center"><input class="genric-btn primary circle" type="submit" value="Send Question"></p>
+                </form>
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    </div>
+    </section>
+{% endblock %}

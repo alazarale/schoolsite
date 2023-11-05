@@ -1,0 +1,178 @@
+{% extends 'other.html' %}
+{% load static %}
+{% block where %}
+
+{% endblock %}
+{% block style %}
+     <style type="text/css">
+        #module{
+            list-style: none;
+            padding-inline-start: 0px;
+        }
+        .selected{
+            background-color: #cbcdce;
+            padding-left: 10px;
+        }
+        #module li{
+            border-bottom: 1px solid #dcd8d8;
+            margin: 10px 0px;
+        }
+        #module li:hover{
+            background-color: #dee0e0;
+        }
+        #module .selected:hover{
+            background-color: #cbcdce;
+            padding-left: 20px;
+        }
+        .right-contents .comments-area {
+            padding: 0;
+            border: 0;
+            background: transparent;
+        }
+
+     </style>
+{% endblock %}
+{% block container %}
+    <section class="course_details_area section_gap">
+    <div class="container">
+        <h1 style="text-align: center">
+        {{ module.title }}
+        </h1><br><br>
+    <div class="row">
+    <div class="col-md-4">
+    <div class="blog_right_sidebar">
+        <h3 class="widget_title">Modules</h3>
+        <ul id="module">
+            {% for m in object.modules.all %}
+                <li data-id="{{ m.id }}" {% if m == module %}class="selected"{% endif %}>
+                    <a href="{% url 'student_course_detail_module' object.id m.id %}">
+                        <span>Module <span>{{ m.order|add:1 }}</span> </span>
+                        <br>
+                        {{ m.title }}
+                    </a>
+                </li>
+            {% empty %}
+                <li>No modules yet</li>
+            {% endfor %}
+        </ul>
+        <br><br>
+    </div>
+    </div>
+    <div class="col-md-8">
+        {% for content in module.contents.all %}
+            {% with item=content.item %}
+                <h2>{{ item.title }}</h2>
+                {{ item.render }}
+            {% endwith %}
+        {% endfor %}
+        <br><hr><br>
+        <h1 style="text-align: center;">Questions</h1>
+        <div class="comments-area" id="comment_area">
+            <h4>{{ questions.count }} Questions</h4>
+            {% for question in questions %}
+            <div class="comment-list">
+                <div class="single-comment justify-content-between d-flex">
+                    <div class="user justify-content-between d-flex">
+                        <div class="thumb">
+                            <img src="{% static 'img/blog/c1.jpg' %}" alt="">
+                        </div>
+                        <div class="desc">
+                            <h5><a href="#">{{ question.user.username }}</a></h5>
+                            <p class="date">{{ question.created }} </p>
+                            <p class="comment">
+                                {{ question.question }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="reply-btn">
+                        <a data-remodal-target="modalreply{{ question.id }}" class="btn-reply text-uppercase">reply</a>
+                    </div>
+                    <div class="remodal" data-remodal-id="modalreply{{ question.id }}">
+                        <button data-remodal-action="close" class="remodal-close"></button>
+                            <h4>Add a Question</h4>
+                            <form>
+                                {% csrf_token %}
+                                <div class="form-group">
+                                <textarea id="rep-text{{ question.id }}" class="single-textarea" placeholder="Message" onfocus="this.placeholder = ''" onblur="this.placeholder = 'You question'" required=""></textarea>                    </div>
+                                <button id="rep-add" data-id="{{ question.id }}" data-remodal-action="confirm" class="remodal-confirm" onclick="postReply({{ question.id }})">Post Reply</button>
+                                <button data-remodal-action="cancel" class="remodal-cancel">Cancel</button>
+                            </form>
+                    </div>
+                </div>
+            </div>
+            {% for reply in question.replies.all  %}
+            <div class="comment-list left-padding">
+                <div class="single-comment justify-content-between d-flex">
+                    <div class="user justify-content-between d-flex">
+                        <div class="thumb">
+                            <img src="{% static 'img/blog/c2.jpg' %}" alt="">
+                        </div>
+                        <div class="desc">
+                            <h5><a href="#">{{ reply.user.username }}</a></h5>
+                            <p class="date">{{ reply.created }} </p>
+                            <p class="comment">
+                                {{ reply.text }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endfor %}
+            <br><br>
+        <div style="text-align: center;"><a data-remodal-target="modalquestion" class="genric-btn success radius">Ask Question</a></div>
+        </div>
+        <div class="remodal" data-remodal-id="modalquestion">
+            <button data-remodal-action="close" class="remodal-close"></button>
+
+                <h4>Add a Question</h4>
+                <form>
+                    {% csrf_token %}
+                    <div class="form-group">
+                    <textarea id="que-text" class="single-textarea" placeholder="Message" onfocus="this.placeholder = ''" onblur="this.placeholder = 'You question'" required=""></textarea>                    </div>
+                    <button id="que-add" data-remodal-action="confirm" class="remodal-confirm">Post Question</button>
+                    <button data-remodal-action="cancel" class="remodal-cancel">Cancel</button>
+                </form>
+        </div>
+    </div>
+    </div>
+    </div>
+    </section>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+         $('#que-add').click(function(e){
+            e.preventDefault();
+            $.ajax({
+                type:'POST',
+                url:'question/add/',
+                data:{
+                    'question': $('#que-text').val(),
+                    'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+                },
+                success:function(){
+                    window.location.reload(true);
+
+                },
+            });
+        });
+         const questions = document.querySelector('#electric-cars');
+         const question = questions.dataset.id;
+         function postReply(e){
+             console.log(e);
+            $.ajax({
+                type:'POST',
+                url:'reply/add/',
+                data:{
+                    'reply': $('#rep-text'+e).val(),
+                    'ques_id': e,
+                    'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+                },
+                success:function(){
+                    window.location.reload(true)
+                },
+            });
+
+        };
+    </script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<br>
+<h4 class="card-title">Exams</h4>
+<br>
+<div class="row">
+    {% for exam in exams %}
+    <div class="col-md-4">
+        <div class="card">
+        <div class="card-body">
+            <div style="margin: 0 auto; text-align: center;">
+                <div class="badge badge-success">{{ exam.subject.name }}</div>
+                <div class="badge badge-success">Time: {{ exam.time }}m</div>
+                <div class="badge {% if exam.status == 'active' %}badge-primary{% else %}badge-warning{% endif %}">{{ exam.status }}</div>
+            </div>
+            <br>
+            <div style="text-align: center;">
+                <h4 class="card-title" style="color: #747474">{{ exam.title }}</h4>
+            </div>
+            <div style="margin: 0 auto; text-align: center;">
+                {% for gr in exam.grade_association.all %}
+                    <div class="badge badge-success">{{ gr.grade.grade_num }}{{ gr.grade.section }}</div>
+                {% endfor %}
+            </div>
+            <br>
+            <div style="margin: 0 auto; text-align: center;">
+                <a href="{% url 'exam_url:exam_questions' exam.id %}" class="btn btn-success">Show More</a>
+            </div>
+            
+        </div>
+        </div><br><br><br>
+    </div>
+    {% endfor %} 
+</div>
+{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    
+</script>
+{% endblock %}
+
+

@@ -1,0 +1,51 @@
+{% extends 'admin_static.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+    .bgg {
+    background-image: url("{% static 'bg.jpg' %}");
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container-scroller">
+    <div class="container-fluid page-body-wrapper full-page-wrapper bgg">
+            <div class="col-lg-4 mx-auto" style="background-color: white; margin:2rem 0rem">
+            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
+                <div class="brand-logo">
+                <img src="{% static 'adminpanel/images/logo.svg' %}" alt="logo"><br><br>
+                <a href="{% url 'mainapp:home' %}" class="genric-btn success-border circle">Back to Home</a>
+                </div>
+                <h4>Hello! let's get started</h4>
+                <h6 class="fw-light">Sign in to continue.</h6>
+                <form class="pt-3" action="" method="post">
+                    {{ form|crispy }}
+                    {% csrf_token %}
+                
+                    <input class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn" type="submit" value="SIGN IN">
+                
+                <div class="my-2 d-flex justify-content-between align-items-center">
+                    <div class="form-check">
+                    <label class="form-check-label text-muted">
+                        <input type="checkbox" class="form-check-input">
+                        Keep me signed in
+                    </label>
+                    </div>
+                    <a href="#" class="auth-link text-black">Forgot password?</a>
+                </div>
+                
+                </form>
+            </div>
+            </div>
+        
+        <!-- content-wrapper ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+
+{% endblock body %}

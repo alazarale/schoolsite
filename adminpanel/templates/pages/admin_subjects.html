@@ -1,0 +1,205 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+  
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<div class="row">
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+    <div class="card-body">
+        <div class="d-sm-flex justify-content-between align-items-start">
+            <div>
+                <h4 class="card-title">Subject List</h4>
+            </div>
+            <div>
+                <button class="btn btn-success btn-md text-white mb-0 me-0" type="button" data-bs-toggle="modal" data-bs-target="#add-sub-modal"><i class="ti-plus"></i> Add new Subject</button>
+            </div>
+            <div class="modal fade" id="add-sub-modal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Adding new subject</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="exampleInputsubname">Subject name</label>
+                            <input type="text" class="form-control" id="exampleInputsubname" placeholder="Username">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputsubname">Taking grades</label>
+                         
+                            <div class="row">
+                                {% for gr in gr_list %}
+                                <div class="col-sm-4">
+                                    <div class="form-check form-check-warning">
+                                        <label class="form-check-label">
+                                            <input name="su-gr" value="{{ gr }}" type="checkbox" class="form-check-input">Grade {{ gr }}<i class="input-helper"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div> 
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-success" onclick="">Add</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                    {% csrf_token %}    
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+        <div class="accordion" id="accordion-6" role="tablist">
+            {% for subject in subjects %}
+            <div class="card">
+                <div class="card-header" role="tab" id="heading-{{ subject.id }}">
+                    <h6 class="mb-0">
+                    <a data-bs-toggle="collapse" href="#collapse-{{ subject.id }}" aria-expanded="false" aria-controls="collapse-{{ subject.id }}" class="collapsed">
+                        {{ subject.name }}
+                    </a>
+                    </h6>
+                </div>
+                <div id="collapse-{{ subject.id }}" class="collapse" role="tabpanel" aria-labelledby="heading-{{ subject.id }}" data-bs-parent="#accordion-6" style="background-color: white;">
+                    <div class="card-body">
+                    <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Taking class</th>
+                            <th>Teacher</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            {% for gs in subject.grades.all %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>Grade {{ gs.grade.grade_num }}{{ gs.grade.section }}</td>
+                                {% if gs.teacher.all|length > 0 %}
+                                <td><a href="{% url 'ad_panel:admin_teacher_profile' gs.teacher.first.teacher.id  %}">{{ gs.teacher.first.teacher.user.first_name }} ({{ gs.teacher.first.teacher.teacher_id }})</td>
+                                {% else %}
+                                <td>
+                                    <h6>Not assigned</h6>
+                                    <button type="button" onclick="addSubject('{{ gs.grade.grade_num }}{{ gs.grade.section }}', '{{ subject.name }}')" class="btn btn-outline-secondary btn-sm">Assign</button>
+                                  </td>
+                                {% endif %}
+                                
+                                <td><button type="button" class="btn btn-outline-secondary btn-icon-text btn-md">
+                                    Edit
+                                    <i class="ti-file btn-icon-append"></i>                          
+                                  </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+<div class="d-flex justify-content-center">
+    <div class="modal fade" id="sub-teacher" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="ModalLabel"></h5>
+            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-1"></div>
+                    <div class="col-sm-10">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="exampleInputName1">Grade</label>
+                                    <input type="text" class="form-control" id="grade-lbl" style="cursor: not-allowed;" disabled>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="exampleInputName1">Subject</label>
+                                    <input type="text" class="form-control" id="subject-lbl" style="cursor: not-allowed;" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <label class="col-sm-10 col-form-label">Select Teacher</label>
+                        <select class="form-control" id="home-subject">
+                            <option value="None">None</option>
+                            {% for teacher in teachers %}
+                                <option value="{{ teacher.id }}">{{ teacher.user.first_name }} {{ teacher.user.last_name }} ({{ teacher.teacher_id }})</option>
+                            {% endfor %}
+                        </select>
+                        <div class="row" id="grade-check">
+
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-success" onclick="addSubjectJson()">Add</button>
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            {% csrf_token %}    
+            </div>
+        </div>
+        </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    function addSubject(gr, sub){
+        $("#grade-lbl").val("Grade "+gr);
+        $("#subject-lbl").val(sub);
+        $("#ModalLabel").text("Setting teacher for Grade "+gr);
+        $('#sub-teacher').modal('show'); 
+    };
+
+    function addSubjectJson(){
+        var grade = $("#grade-lbl").val();
+        var subject = $("#subject-lbl").val();
+        var teacher = $('#home-subject').val();
+        
+        $.ajax({
+            type:'POST',
+            url:'add/',
+            data:{
+                'grade': grade,
+                'subject': subject,
+                'teacher': teacher,
+                'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+            },
+            success:function(data){
+                if(data['stat']=='success'){
+                    window.location.reload()
+                }
+            },
+        }); 
+    };
+</script>
+{% endblock %}
+

@@ -1,0 +1,39 @@
+{% extends 'other.html' %}
+{% block where %}
+
+{% endblock %}
+{% block container %}
+    <section class="blog_categorie_area">
+    <div class="container">
+    {% with subject=course.subject %}
+        <h1 style="text-align: center">
+            {{ object.title }}
+        </h1><hr>
+        <div class="row">
+            <div class="col-md-2">
+                <div class="course_head overlay">
+                    {% if course.picture %}
+                    <img class="img-fluid w-100" src="{{ course.picture.url }}" alt="">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h2>Overview</h2>
+                <p>
+                    <a href="{% url 'course_list_subject_grade' request.user.student.grade.id subject.slug %}">{{ subject.title }}</a>.
+                    {{ course.modules.count }} modules.
+                    Instructor: {{ course.owner.get_full_name }}
+                </p>
+                {{ object.overview|linebreaks }}
+                {% if object.modules.count > 0 %}
+                <a href="{% url "student_course_detail" course.id %}" class="genric-btn success-border radius">Go to the course</a>
+                {% else %}
+                    <p style="color: green">This course has no module.</p>
+                {% endif %}
+            </div>
+            <div class="col-md-2"></div>
+        </div>
+    {% endwith %}
+    </div>
+    </section>
+{% endblock %}

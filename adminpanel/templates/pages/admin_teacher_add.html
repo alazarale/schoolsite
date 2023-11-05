@@ -1,0 +1,101 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% block style %}
+<style type="text/css">
+  
+</style>
+{% endblock %}
+{% block content %}
+{% if yr != 'no' %}
+<div class="row">
+    <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Add New Teacher</h4>
+          <p class="card-description">
+            Basic form elements
+          </p>
+          <form class="forms-sample">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="exampleInputName1">First Name</label>
+                        <input type="text" class="form-control" id="first_name" placeholder="First Name">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Middle Name</label>
+                        <input type="text" class="form-control" id="middle_name" placeholder="Middle Name">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" placeholder="Last Name">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Phone #</label>
+                        <input type="text" class="form-control" id="phone" placeholder="Phone Number">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Email</label>
+                        <input type="email" class="form-control" id="email" placeholder="Email">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Birth date</label>
+                        <input class="form-control" id="birth_date" placeholder="yyyy-mm-dd">
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="exampleInputName1">Hired date</label>
+                        <input class="form-control" id="hired_date" placeholder="yyyy-mm-dd">
+                    </div>
+                </div>
+            </div>
+            {% csrf_token %}
+            
+          </form>
+          <button onclick="addTeacher()" class="btn btn-primary me-2">Submit</button>
+        </div>
+      </div>
+</div>
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    function addTeacher(){
+        console.log("dfsdf");
+        $.ajax({
+            type:'POST',
+            url:'add/',
+            data:{
+                'f_name': $("#first_name").val() ,
+                'm_name': $("#middle_name").val(),
+                'l_name': $("#last_name").val(),
+                'phone': $("#phone").val(),
+                'email': $("#email").val(),
+                'bd': $("#birth_date").val(),
+                'hd': $("#hired_date").val(),
+                'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+            },
+            success:function(data){
+                window.location.href = "../434"+data['pk']+"4232/profile/"
+            },
+        }); 
+    }
+
+</script>
+{% endblock %}
+

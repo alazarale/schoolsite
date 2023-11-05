@@ -1,0 +1,177 @@
+{% extends 'admin_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block style %}
+<style type="text/css">
+    ul.progress-bar {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        font-size: 0;
+        list-style: none;
+    }
+    
+    li.section {
+        display: inline-block;
+        padding-top: 45px;
+        font-size: 13px;
+        font-weight: bold;
+        line-height: 16px;
+        color: gray;
+        vertical-align: top;
+        position: relative;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    li.section:before {
+        content: 'x';
+        position: absolute;
+        top: 2px;
+        left: calc(50% - 15px);
+        z-index: 1;
+        width: 30px;
+        height: 30px;
+        color: white;
+        border: 2px solid white;
+        border-radius: 17px;
+        line-height: 30px;
+        background: gray;
+    }
+    .status-bar {
+        height: 2px;
+        background: gray;
+        position: relative;
+        top: 20px;
+        margin: 0 auto;
+    }
+    .current-status {
+        height: 2px;
+        width: 0;
+        border-radius: 1px;
+        background: mediumseagreen;
+    }
+    
+    @keyframes changeBackground {
+        from {background: gray}
+        to {background: mediumseagreen}
+    }
+    
+    li.section.visited:before {
+        content: '\2714';
+        animation: changeBackground .5s linear;
+        animation-fill-mode: forwards;
+    }
+    
+    li.section.visited.current:before {
+        box-shadow: 0 0 0 2px mediumseagreen;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div style="text-align: center">
+                    <h3 class="card-title">Academic Year Setup</h3>
+                </div>
+            </div>
+        
+        <div class="setup-progress-wrapper"></div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class='col-sm-1'></div>
+    <div class="col-md-10 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+            <h4 class="card-title">Available Grades</h4>
+            <p class="card-description">
+                Grade setup
+            </p>
+            <div class="form-group row">
+                <div class="col">
+                  <label>Grade</label>
+                  <div id="the-basics">
+                    <span class="twitter-typeahead" style="position: relative; display: inline-block;"><input class="typeahead tt-hint" type="text" readonly="" autocomplete="off" spellcheck="false" tabindex="-1" dir="ltr" style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; opacity: 1; background: none 0% 0% / auto repeat scroll padding-box padding-box rgb(255, 255, 255);"><input id="grade" class="typeahead tt-input" type="text" placeholder="What grade?" autocomplete="off" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent;"><pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: Manrope, sans-serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"></pre><div class="tt-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;"><div class="tt-dataset tt-dataset-states"></div></div></span>
+                  </div>
+                </div>
+                <div class="col">
+                  <label>Sections(separate by comma)</label>
+                  <div id="bloodhound">
+                    <span class="twitter-typeahead" style="position: relative; display: inline-block;"><input class="typeahead tt-hint" type="text" readonly="" autocomplete="off" spellcheck="false" tabindex="-1" dir="ltr" style="position: absolute; top: 0px; left: 0px; border-color: transparent; box-shadow: none; opacity: 1; background: none 0% 0% / auto repeat scroll padding-box padding-box rgb(255, 255, 255);"><input id="section" class="typeahead tt-input" type="text" placeholder="Sections(separate by comma" autocomplete="off" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent; text-transform:uppercase"><pre aria-hidden="true" style="position: absolute; visibility: hidden; white-space: pre; font-family: Manrope, sans-serif; font-size: 14px; font-style: normal; font-variant: normal; font-weight: 400; word-spacing: 0px; letter-spacing: 0px; text-indent: 0px; text-rendering: auto; text-transform: none;"></pre><div class="tt-menu" style="position: absolute; top: 100%; left: 0px; z-index: 100; display: none;"><div class="tt-dataset tt-dataset-states"></div></div></span>
+                  </div>
+                </div>
+            </div>
+            <div style="text-align: center">
+                <button onclick="addGrade()" type="submit" class="btn btn-info mb-2">Add</button><br>
+                {% csrf_token %}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>
+                        Grade
+                        </th>
+                        <th>
+                        Sections
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody id="gr-table">
+                    </tbody>
+                </table>
+            </div>
+            <br>
+            <div style="text-align: center">
+                <a class="btn btn-primary mb-2" href="{% url 'acc_year:yr_setup_subject' yr.id %}">Next</a>
+            </div>
+            </div> 
+        </div>
+    </div>
+    <div class='col-sm-1'></div>
+</div>
+</div>
+  
+</div>
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+    ProgressBar.singleStepAnimation = 500;
+    ProgressBar.init(
+      [ 'Year Setup',
+        'Grade Setup',
+        'Adding Subjects',
+        'Adding Students',
+      ],
+      'Grade Setup',
+      'setup-progress-wrapper' // created this optional parameter for container name (otherwise default container created)
+    );
+
+    function addGrade(){
+        var grade = $("#grade").val();
+        var section = $("#section").val();
+        $.ajax({
+            type:'POST',
+            url:'grade/add/',
+            data:{
+                'grade': grade,
+                'section': section,
+                'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+            },
+            success:function(data){
+                var gr = data['grade'];
+                var sec = data['section'];
+                $("#gr-table").append("<tr><td>"+grade+"</td><td>"+sec+"</td></tr>");
+                $("#grade").val('');
+                $("#section").val('');
+            },
+        }); 
+
+    }
+</script>
+{% endblock %}

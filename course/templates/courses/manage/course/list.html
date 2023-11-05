@@ -1,0 +1,61 @@
+{% extends 'other.html' %}
+{% block where %}
+<div class="page_link">
+    <a href="index.html">Courses</a>
+    <a href="blog.html">My courses</a>
+</div>
+{% endblock %}
+{% block container %}
+    <section class="blog_categorie_area">
+    <div class="container">
+    <h1 style="text-align: center">My Courses</h1><br><br>
+    <div class="row">
+    {% for course in object_list %}
+    <div class="col-lg-3 col-md-6">
+        <div class="single_course">
+            <div class="course_head overlay">
+                <img class="img-fluid w-100" src="{{ course.picture.url }}" alt="">
+                <div class="authr_meta">
+                    <img src="img/author1.png" alt="">
+                </div>
+            </div>
+            <div class="course_content">
+                <h4>
+                    <a href="#">{{ course.title }}</a>
+                </h4>
+                <p>{{ course.overview|slice:100 }}...</p>
+                <div class="course_meta d-flex justify-content-between">
+                    <div>
+                        <span class="meta_info">
+                            <a class="genric-btn info-border circle" href="{% url 'course_new_grade' course.id %}" style="margin: 5px 0px">Add Grades</a>
+                        </span>
+                        <span class="meta_info">
+                            <a class="genric-btn info-border circle" href="{% url 'course_edit' course.id %}" style="margin: 5px 0px">Edit</a>
+                        </span>
+                        <span class="meta_info">
+                            <a class="genric-btn danger-border circle" href="{% url 'course_delete' course.id %}" style="margin: 5px 0px">Delete</a>
+                        </span>
+                        <span class="meta_info">
+                            <a class="genric-btn info-border circle" href="{% url 'course_module_update' course.id %}" style="margin: 5px 0px">Edit Module</a>
+                        </span>
+                        {% if course.modules.count > 0 %}
+                        <span class="meta_info">
+                            <a class="genric-btn info-border circle" href="{% url 'module_content_list' course.modules.first.id %}" style="line-height: 30px; padding: 0px 20px; margin: 5px 0px">Manage contents</a>
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+        <p style="text-align: center;">You haven't created any courses yet.</p>
+    {% endfor %}
+    </div>
+    <div style="text-align: center">
+        <a class="genric-btn primary" href="{% url 'course_create' %}" >Crete new course</a>
+    </div>
+    </div>
+    </section>
+
+{% endblock %}

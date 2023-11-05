@@ -1,0 +1,27 @@
+{% extends 'main.html' %}
+{% load crispy_forms_tags %}
+{% block style %}
+{% endblock %}
+{% block banner %}
+<section class="blog_categorie_area">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <div class="single_instructor" style="text-align: justify">
+                    <div class="author_decs">
+                        <h3 style="text-align: center">Subject adding pannel</h3><br>
+                        <form enctype="multipart/form-data" method="post" action="">
+                            {{ subject_excel }}
+                            {% csrf_token %}
+                            <input type="submit" value="Submit" class="btn btn-success">
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'main.html' %}
+{% block style %}
+     <style type="text/css">
+
+     </style>
+{% endblock %}
+{% block banner %}
+    <div class="instructors_area lite_bg">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                    <div class="main_title">
+                        <h2>Course "{{ course.title }}"</h2><hr>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3"></div>
+                <div class="col-md-6">
+                    <div class="single_instructor" style="text-align: justify">
+                        <div class="author_decs">
+                            <h3>Already added Grades</h3><br>
+                            <div class="row">
+                            {% for g in course.grade.all %}
+                                <div class="col-sm-4">
+                                    <label>Grade {{ g.grades.grade_name }}</label>
+                                </div>
+                            {% empty %}
+                                <p>no grade added</p>
+                            {% endfor %}
+                            </div><br><br><br>
+                            <h3>Add other grade?</h3><br>
+                            <div class="row" style="text-align: left">
+                                {% for grade in grades %}
+                                <div class="col-sm-4">
+                                    <label><input type="checkbox" value="{{ grade.grade_name }}" name="grades">&nbsp;&nbsp;Grade {{ grade.grade_name }}</label>
+                                </div>
+                                {% endfor %}
+                            </div><br><br>
+                            <div style="text-align: center">
+                                {% csrf_token %}
+                                <a class="genric-btn info-border circle" href="#" onclick="createCourseGrade()" style="margin: 5px 0px">Submit</a>
+                            </div>
+                        </div>
+    
+                    </div>
+                </div>
+                <div class="col-sm-3"></div>
+            </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    <script type="text/javascript">
+        function createCourseGrade(){
+            var grades = [];
+            $.each($("input[name='grades']:checked"), function(){
+                grades.push($(this).val());
+            });
+            $.ajax({
+                type:'POST',
+                url:'assos/add',
+                data:{
+                    'grades': grades,
+                    'csrfmiddlewaretoken': $("input[name=csrfmiddlewaretoken]").val()
+                },
+                success:function(data){
+                    if(data=='done'){
+                        window.location = '../../mine/'
+                    }
+                },
+            });         
+        }
+    </script>
+{% endblock %}
